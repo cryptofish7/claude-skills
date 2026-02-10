@@ -14,24 +14,24 @@ cd claude-skills
 
 | Skill | Triggers | Description |
 |-------|----------|-------------|
-| **ralph** | "ralph", "work on tasks", "autopilot" | Autonomous task runner. Finds the next incomplete task, implements it, runs the full pipeline (verify, docs, CI/CD, commit, PR, review, CI, merge), then moves to the next task. |
-| **setup-workflow** | "setup workflow", "init workflow" | Bootstraps the autonomous development pipeline into a project's CLAUDE.md. Installs all required skills and agents. |
-| **ci-cd-pipeline** | "add CI/CD", "update CI", "review pipeline" | Analyzes a repo and maintains GitHub Actions workflows. Detects language, tooling, test frameworks, Docker, and deploy targets. |
-| **docs-consolidator** | "consolidate docs", "audit docs", "organize docs" | Audits project documentation, deduplicates content, and moves information to canonical locations. |
-| **smoke-test** | "smoke test", "deploy locally", "run deploy" | Generates and maintains a `deploy.sh` smoke test script that grows with the project. |
+| **ralph** | "ralph", "work on tasks", "autopilot" | Your autonomous developer. Give it a task list (`TASKS.md` or GitHub Issues) and it works through every task end-to-end — planning, coding, testing, docs, CI/CD, PR, code review, and merge — then moves to the next. Watch real-time progress via `Ctrl+T`. |
+| **setup-workflow** | "setup workflow", "init workflow" | Run once at the start of a project. Adds a standardized development pipeline to your `CLAUDE.md` so every Claude Code session follows the same steps: verify, update docs, audit CI/CD, commit, PR, review, merge. |
+| **ci-cd-pipeline** | "add CI/CD", "update CI", "review pipeline" | Scans your project — language, test framework, linter, Docker, deploy targets — and creates or updates GitHub Actions workflows to match. Produces an audit report of what to add, remove, or update, with setup steps for new deploy targets. |
+| **docs-consolidator** | "consolidate docs", "audit docs", "organize docs" | Reads all your project docs and finds what's duplicated, misplaced, or stale. Builds a registry of which doc owns which topic, then moves content to its canonical home and replaces duplicates with cross-references. |
+| **smoke-test** | "smoke test", "deploy locally", "run deploy" | Creates a `deploy.sh` script that verifies your project works locally. Detects your language, package manager, linter, test framework, and CLI entry points, then builds a multi-stage test script. Only tests what's implemented — skips stubs. Grows with your project. |
 
 ## Agents
 
 | Agent | Triggers | Description |
 |-------|----------|-------------|
-| **code-reviewer** | "review PR", "review my changes", "code review" | Reviews PRs, staged/unstaged changes, or specific files for bugs, security issues, and maintainability. |
-| **debugger** | "debug this", "fix this error", "why is this failing" | Diagnoses errors, test failures, behavioral bugs, and performance issues. |
+| **code-reviewer** | "review PR", "review my changes", "code review" | Senior code reviewer. Point it at a PR, staged changes, or specific files and it checks for bugs, security issues, and maintainability problems. Each finding gets a severity (Critical / Warning / Nit) with exact file:line and a suggested fix. |
+| **debugger** | "debug this", "fix this error", "why is this failing" | Systematic debugger. Reproduces the issue, traces it to the root cause, applies a minimal fix, then verifies by re-running the failing test and the broader suite. Works on errors, test failures, behavioral bugs, and performance issues. |
 
 ## Dependencies
 
-**ci-cd-pipeline**, **docs-consolidator**, **smoke-test**, **code-reviewer**, and **debugger** are standalone.
+**ci-cd-pipeline**, **docs-consolidator**, **smoke-test**, **code-reviewer**, and **debugger** are standalone — install any combination you like.
 
-**ralph** and **setup-workflow** depend on all of the above — install the full set for them to work.
+**ralph** and **setup-workflow** depend on all of the above. Install the full set for them to work.
 
 ## Uninstall
 
