@@ -1,6 +1,6 @@
 ---
 name: setup-workflow
-description: Set up the autonomous post-task workflow for a project. Injects the standard development pipeline into CLAUDE.md and installs all required skills and agents (docs-consolidator, ci-cd-pipeline, smoke-test, code-reviewer, debugger). Use at the start of a new project. Triggers on "setup workflow", "init workflow", "add workflow", or "set up project workflow".
+description: Set up the autonomous post-task workflow for a project. Injects the standard development pipeline into CLAUDE.md and installs all required skills and agents (docs-consolidator, ci-cd-pipeline, smoke-test, bug-bash-update, code-reviewer, debugger). Use at the start of a new project. Triggers on "setup workflow", "init workflow", "add workflow", or "set up project workflow".
 ---
 
 # Setup Workflow
@@ -9,13 +9,14 @@ Install the autonomous post-task development pipeline into a project's CLAUDE.md
 
 ## Dependencies
 
-This workflow requires 5 tools:
+This workflow requires 6 tools:
 
 | Dependency | Type | Live path |
 |-----------|------|-----------|
 | docs-consolidator | Skill | `~/.claude/skills/docs-consolidator/SKILL.md` |
 | ci-cd-pipeline | Skill | `~/.claude/skills/ci-cd-pipeline/SKILL.md` |
 | smoke-test | Skill | `~/.claude/skills/smoke-test/SKILL.md` |
+| bug-bash-update | Skill | `~/.claude/skills/bug-bash-update/SKILL.md` |
 | code-reviewer | Agent | `~/.claude/agents/code-reviewer.md` |
 | debugger | Agent | `~/.claude/agents/debugger.md` |
 
@@ -91,7 +92,7 @@ This file provides context for Claude Code sessions working on this project.
 ### Phase 5: Verify
 
 1. Read the updated CLAUDE.md
-2. Confirm the Workflow section contains the full 9-step pipeline
+2. Confirm the Workflow section contains the full pipeline
 3. Confirm no other sections were accidentally modified
 4. Report a summary of all changes made
 

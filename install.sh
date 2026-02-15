@@ -5,6 +5,7 @@ REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 CLAUDE_DIR="$HOME/.claude"
 SKILLS_DIR="$CLAUDE_DIR/skills"
 AGENTS_DIR="$CLAUDE_DIR/agents"
+HOOKS_DIR="$CLAUDE_DIR/hooks"
 
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -30,7 +31,7 @@ check_not_symlink() {
 check_not_symlink "$SKILLS_DIR" "skills" || exit 1
 check_not_symlink "$AGENTS_DIR" "agents" || exit 1
 
-mkdir -p "$SKILLS_DIR" "$AGENTS_DIR"
+mkdir -p "$SKILLS_DIR" "$AGENTS_DIR" "$HOOKS_DIR"
 
 shopt -s nullglob
 
@@ -76,5 +77,26 @@ for agent_file in "$REPO_DIR"/agents/*.md; do
     info "${agent_name%.md} (agent) — installed"
 done
 
+for hook_file in "$REPO_DIR"/hooks/*.sh; do
+    hook_name="$(basename "$hook_file")"
+    target="$HOOKS_DIR/$hook_name"
+
+    if [ -L "$target" ]; then
+        existing="$(readlink "$target")"
+        if [ "$existing" = "$hook_file" ]; then
+            info "${hook_name%.sh} (hook) — already linked"
+            continue
+        else
+            warn "${hook_name%.sh} (hook) — replacing symlink (was $existing)"
+        fi
+    elif [ -f "$target" ]; then
+        warn "${hook_name%.sh} (hook) — file exists, skipping (remove it manually to install)"
+        continue
+    fi
+
+    ln -sf "$hook_file" "$target"
+    info "${hook_name%.sh} (hook) — installed"
+done
+
 echo ""
-info "Done. Skills and agents are now available in Claude Code."
+info "Done. Skills, agents, and hooks are now available in Claude Code."

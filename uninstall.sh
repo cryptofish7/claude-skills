@@ -4,6 +4,7 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_DIR="$HOME/.claude/skills"
 AGENTS_DIR="$HOME/.claude/agents"
+HOOKS_DIR="$HOME/.claude/hooks"
 
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -44,5 +45,20 @@ for agent_file in "$REPO_DIR"/agents/*.md; do
     fi
 done
 
+for hook_file in "$REPO_DIR"/hooks/*.sh; do
+    hook_name="$(basename "$hook_file")"
+    target="$HOOKS_DIR/$hook_name"
+
+    if [ -L "$target" ]; then
+        existing="$(readlink "$target")"
+        if [ "$existing" = "$hook_file" ]; then
+            rm "$target"
+            info "${hook_name%.sh} (hook) — removed"
+        else
+            warn "${hook_name%.sh} (hook) — points elsewhere ($existing), skipping"
+        fi
+    fi
+done
+
 echo ""
-info "Done. Removed all skills and agents installed by this repo."
+info "Done. Removed all skills, agents, and hooks installed by this repo."
