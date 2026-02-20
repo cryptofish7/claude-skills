@@ -47,7 +47,7 @@ If you were spawned as a Task Runner by an orchestrator (like Ralph), follow the
 Run this pipeline after every completed task. No user input required unless a step fails and cannot be auto-resolved.
 
 **Step 1: Verify locally.**
-Run the project's linting, formatting, type checking, and test commands. Check the Commands section of this file or `pyproject.toml`/`package.json`/`Makefile` for the exact commands. Fix any failures before proceeding.
+Spawn a subagent to run the project's linting, formatting, type checking, and test commands. The subagent checks the Commands section of this file or `pyproject.toml`/`package.json`/`Makefile` for the exact commands, fixes any failures, and reports pass/fail.
 
 **Step 2: Audit docs, CI/CD, and deploy script (parallel).**
 Spawn these as **parallel Task subagents** (`subagent_type=general-purpose`). Each subagent gets the relevant skill instructions and an explicit directive: "Execute autonomously. Do not ask the user for approval — review your own plan and proceed."
@@ -94,6 +94,10 @@ Handling results:
 gh pr merge --squash --delete-branch
 git checkout main && git pull origin main
 ```
+- **After merge, verify main CI:**
+  1. Wait for post-merge CI: `gh run list --branch main --limit 1 --json databaseId,status,conclusion | jq` then `gh run watch <run-id>`.
+  2. If CI fails: treat as highest priority. Diagnose with `gh run view <run-id> --log-failed`, fix on a new branch, and merge the fix before moving on.
+  3. The task is not complete until main CI is green.
 - **If merge conflict:**
   1. Rebase onto the default branch: `git fetch origin main && git rebase origin/main`.
   2. Force-push safely: `git push --force-with-lease`.
