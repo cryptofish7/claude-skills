@@ -31,7 +31,7 @@ Scan each file for three categories of issues:
 
 - Instructions that say the same thing in different words within one file
 - Rules restated across multiple CLAUDE.md files
-- Content that duplicates information from docs referenced by CLAUDE.md (e.g., architecture details that already live in `docs/Forecaster_Architecture.md`)
+- Content that duplicates information from docs referenced by CLAUDE.md (e.g., architecture details that already live in a dedicated architecture doc)
 - Sections that restate framework/tool defaults (things Claude already knows)
 
 #### 2b. Verbosity

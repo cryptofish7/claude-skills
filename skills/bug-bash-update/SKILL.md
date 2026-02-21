@@ -26,21 +26,11 @@ If no meaningful changes are detected (e.g., only CI, docs, or config changes wi
 ### Phase 2: Map changes to BUG_BASH_GUIDE sections
 
 1. Read `docs/BUG_BASH_GUIDE.md` in full.
-2. Use this file-path to section mapping to identify affected sections:
-
-| File path pattern | BUG_BASH_GUIDE section |
-|---|---|
-| `packages/frontend/src/app/page.tsx`, `components/home/` | Home Page / Landing |
-| `packages/frontend/src/app/forecaster/`, `components/forecaster/` | Forecaster Profile |
-| `packages/frontend/src/app/register/`, `hooks/useRegister`, `hooks/useMetaTxRegister` | Registration |
-| `packages/frontend/src/components/trading/`, `hooks/useBuy`, `hooks/useSell` | Trading |
-| `packages/frontend/src/components/conditional/`, `hooks/useConditional` | Conditional Markets |
-| `packages/frontend/src/components/history/`, `hooks/useHistory` | History / Portfolio |
-| `packages/frontend/src/components/layout/`, `components/nav/` | Navigation / Layout |
-| `packages/contracts/src/` | Smart Contracts (if user-facing behavior changed) |
-| `packages/indexer/` | Data / Indexer (if user-facing behavior changed) |
-
-3. If the change doesn't map to any section, check if a new section is warranted. Only create a new section for entirely new features.
+2. Map changed files to BUG_BASH_GUIDE sections:
+   - Read the existing section headings in `docs/BUG_BASH_GUIDE.md`
+   - Match changed file paths to the section that covers that area of the app
+   - Use directory structure and component names as signals (e.g., `components/auth/` → an "Authentication" section)
+   - If no section matches, check if a new section is warranted for an entirely new feature
 
 ### Phase 3: Generate updates
 
@@ -71,8 +61,8 @@ Based on the commit prefix and type of change:
 This phase applies **only to `fix:` commits** that changed items from `[!]` to `[!] FIXED`.
 
 1. Determine the deployment URL:
-   - Check for a Vercel preview deployment: `gh pr list --state open --json url,headRefName | jq`
-   - Fall back to the testnet URL in BUG_BASH_GUIDE (typically `https://forecaster-brown.vercel.app/`)
+   - Check for a preview deployment URL: `gh pr list --state open --json url,headRefName | jq`
+   - Fall back to any production/staging URL listed in BUG_BASH_GUIDE
    - Fall back to `http://localhost:3000` if running locally
 2. Open the deployment in the browser using browser automation tools.
 3. Navigate to the relevant page/feature for the fix.

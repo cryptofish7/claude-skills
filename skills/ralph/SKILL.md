@@ -30,7 +30,6 @@ The `Ctrl+T` task list is a **flat list ordered by creation ID**. To make stages
 
 ### What the user sees
 
-**Sequential (one milestone at a time):**
 ```
 ✓  [1/5] Add core types
 ⟳  [2/5] Implement engine
@@ -44,28 +43,7 @@ The `Ctrl+T` task list is a **flat list ordered by creation ID**. To make stages
         → Merge
 ```
 
-**Parallel (multiple milestones simultaneously):**
-```
-✓  [1/5] Add core types
-⟳  [2/5] Implement engine
-     ✓  → Plan
-     ⟳  → Implement                    "[implementer] Writing code and tests"
-        → Verify
-        → Audit
-        → Commit & PR
-        → Review
-        → CI
-        → Merge
-⟳  [3/5] Add Discord alerts
-     ✓  → Plan
-     ✓  → Implement
-     ⟳  → Verify                       "[debugger] Fixing test failures (retry 1/3)"
-        → Audit
-        → Commit & PR
-        → Review
-        → CI
-        → Merge
-```
+For parallel batches, milestones interleave in creation order — create milestone A + 8 stages, then milestone B + 8 stages.
 
 ### Creation-order protocol
 
@@ -87,18 +65,6 @@ The `Ctrl+T` task list is a **flat list ordered by creation ID**. To make stages
 | 6 | `→ Review` | code-reviewer | `[code-reviewer] Reviewing PR` |
 | 7 | `→ CI` | (self) | `Waiting for CI checks` |
 | 8 | `→ Merge` | orchestrator | `Merging PR and cleaning up` |
-
-### Error/retry activeForm patterns
-
-When a retry spawns a specific agent, update the current stage's `activeForm`:
-
-| Scenario | activeForm |
-|----------|------------|
-| Test failure → debugger | `[debugger] Fixing test failures (retry 1/3)` |
-| Lint/type error → implementer | `[implementer] Fixing lint errors (retry 1/3)` |
-| CI failure → debugger | `[debugger] Fixing CI failure (retry 2/3)` |
-| Review findings → implementer | `[implementer] Fixing review findings` |
-| Merge conflict | `Resolving merge conflict (rebase)` |
 
 ---
 
@@ -301,34 +267,10 @@ For simple tasks (1-3 files, straightforward change), you MAY skip sub-subagents
 
 The orchestrator has pre-created 8 pipeline stage tasks for you. Update them as you progress through each step so the user can see real-time status via `Ctrl+T`.
 
-**Your stage task IDs (in order):**
-[STAGE_TASK_IDS]
-
-**Stage-to-ID mapping:**
-1. Plan = ID at index 0
-2. Implement = ID at index 1
-3. Verify = ID at index 2
-4. Audit = ID at index 3
-5. Commit & PR = ID at index 4
-6. Review = ID at index 5
-7. CI = ID at index 6
-8. Merge = ID at index 7
-
-**How to update stages:**
-- When starting a stage: `TaskUpdate(taskId=<id>, status="in_progress", activeForm="[agent] description")`
-- When a stage completes: `TaskUpdate(taskId=<id>, status="completed")`
-- On retry/error: update the current stage's `activeForm` with the agent name and retry count (e.g., `[debugger] Fixing test failures (retry 1/3)`)
-- **Never create or delete tasks** — the orchestrator owns the task lifecycle
-
-**Agent attribution in activeForm:**
-- Plan: `[planner] Analyzing code and producing plan`
-- Implement: `[implementer] Writing code and tests`
-- Verify: `Running lint, typecheck, tests` (no agent prefix — you run this directly)
-- Audit: `[docs] [ci-cd] [smoke-test] Auditing in parallel`
-- Commit & PR: `Committing and opening PR`
-- Review: `[code-reviewer] Reviewing PR`
-- CI: `Waiting for CI checks`
-- Merge: `Merging PR and cleaning up`
+**Stage task IDs (in order):** [STAGE_TASK_IDS]
+Stages: Plan, Implement, Verify, Audit, Commit & PR, Review, CI, Merge.
+Update each stage with `TaskUpdate(taskId=<id>, status="in_progress")` when starting and `status="completed"` when done. Use the activeForm values from the Pipeline stages table. On retry, include agent name and count (e.g., `[debugger] Fixing test failures (retry 1/3)`).
+Never create or delete tasks — the orchestrator owns the task lifecycle.
 
 ## Pipeline
 

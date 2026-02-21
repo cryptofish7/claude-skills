@@ -23,13 +23,6 @@ Build a project profile by detecting:
 8. **Python version / Node version** — From `requires-python`, `engines`, `.python-version`, `.nvmrc`, `.node-version`
 9. **Dev dependencies** — Check what's available in dev/test dependency groups
 
-Key files to check:
-- `pyproject.toml`, `setup.cfg`, `setup.py`, `requirements*.txt`
-- `package.json`, `tsconfig.json`
-- `go.mod`, `Cargo.toml`, `Gemfile`, `pom.xml`, `build.gradle`
-- `Dockerfile`, `docker-compose.yml`
-- `.github/workflows/*.yml`
-
 ### Phase 2: Audit current pipeline
 
 Read `~/.claude/skills/ci-cd-pipeline/references/actions-catalog.md` for the full catalog of actions with add/remove criteria.

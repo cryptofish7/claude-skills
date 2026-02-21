@@ -11,7 +11,7 @@ Audit, deduplicate, and reorganize project documentation so every piece of infor
 
 ### Phase 1: Build the inventory
 
-1. Check if `.claude/skills/docs-consolidator/references/doc-registry.md` exists in the project.
+1. Check if `.claude/doc-registry.md` exists in the project root.
    - **If it exists:** read it and use it as the authoritative registry. Skip to step 4.
    - **If it doesn't exist:** continue to step 2 to discover and generate one.
 2. Find all documentation files: scan `docs/`, root `CLAUDE.md` (or `docs/CLAUDE.md` if symlinked), `README.md`, and any other `.md` files referenced by CLAUDE.md.
@@ -28,7 +28,7 @@ Audit, deduplicate, and reorganize project documentation so every piece of infor
    - **Security docs** — Threat models, trust assumptions, audit scope
    - **Testing docs** — Test checklists, QA guides
    - **Setup / infra docs** — Database setup, service config, hosting details
-5. If the registry was generated (not loaded from file), write it to `.claude/skills/docs-consolidator/references/doc-registry.md` using this format:
+5. If the registry was generated (not loaded from file), write it to `.claude/doc-registry.md` in the project root using this format:
 
 ```markdown
 # Document Registry
