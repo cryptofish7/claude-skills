@@ -54,7 +54,7 @@ Spawn these as **parallel Task subagents** (`subagent_type=general-purpose`). Ea
 
 - **Docs audit**: Read `~/.claude/skills/docs-consolidator/SKILL.md` and pass its contents. The subagent audits and consolidates project docs.
 - **CI/CD audit**: Read `~/.claude/skills/ci-cd-pipeline/SKILL.md` and pass its contents. The subagent ensures GitHub Actions matches the current project state.
-- **Smoke test update**: Read `~/.claude/skills/smoke-test/SKILL.md` and pass its contents. The subagent updates deploy.sh with smoke tests for new functionality.
+- **Deploy script update**: Read `~/.claude/skills/smoke-test/SKILL.md` and pass its contents. The subagent updates `scripts/deploy.sh` to deploy any new services locally and health-check them.
 - **Bug bash update**: Read `~/.claude/skills/bug-bash-update/SKILL.md` and pass its contents. The subagent updates docs/BUG_BASH_GUIDE.md with new checklist items for features and fix annotations for bugs. For bug fixes, it verifies the fix in the browser before marking [x].
 
 Skip any if the skill is unavailable. Wait for all subagents to complete before proceeding.
