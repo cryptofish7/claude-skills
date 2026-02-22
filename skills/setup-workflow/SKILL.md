@@ -64,6 +64,8 @@ Read `references/workflow-template.md` — this is the canonical workflow conten
 
 **If CLAUDE.md exists but has no Workflow section:** Insert the workflow content after the first heading block (title + any introductory text before the first `---`).
 
+**If a `## Quality Standards` section already exists:** Do not inject a duplicate. Only inject the Quality Standards section (from the template) when creating a new CLAUDE.md or when no such section exists.
+
 **If no CLAUDE.md exists:** Create a new `CLAUDE.md` in the project root with this structure:
 ```markdown
 # CLAUDE.md

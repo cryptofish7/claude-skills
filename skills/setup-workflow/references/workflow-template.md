@@ -110,3 +110,10 @@ Keep context lean by delegating implementation to Task subagents rather than wri
 ### After Making a Mistake
 
 - Add a specific rule to "Mistakes to Avoid" at the bottom of this file.
+
+## Quality Standards
+
+- Be your own reviewer. Would this pass code review? What would a senior engineer question?
+- Prove it works. Don't just write code — run it. Show test output.
+- Demand elegance (balanced). For non-trivial changes, pause and ask: "is there a more elegant way?" If a fix feels hacky, ask: "knowing everything I know now, what's the right solution?" Skip this for simple, obvious fixes — don't over-engineer.
+- Ask clarifying questions upfront. Ambiguity leads to wasted work.
