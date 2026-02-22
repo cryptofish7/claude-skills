@@ -28,8 +28,7 @@ For each dependency in the table above, check if the live file exists:
 
 1. **Skills:** Check that `SKILL.md` exists at the live path.
 2. **Agents:** Check that the agent `.md` file exists at the live path.
-3. **ci-cd-pipeline references:** Also check these additional files:
-   - `~/.claude/skills/ci-cd-pipeline/references/actions-catalog.md`
+3. **ci-cd-pipeline references:** Also check this additional file:
    - `~/.claude/skills/ci-cd-pipeline/references/deploy-prerequisites.md`
 
 If all dependencies are present, proceed to Phase 2.

@@ -11,32 +11,49 @@ Analyze a repository and maintain its GitHub Actions CI/CD pipeline. Designed to
 
 ### Phase 1: Discover project state
 
-Build a project profile by detecting:
+Build a comprehensive project profile by scanning the entire repository:
 
-1. **Language & runtime** — Check file extensions, config files (`pyproject.toml`, `package.json`, `go.mod`, `Cargo.toml`, `Gemfile`, etc.)
+1. **Language & runtime** — Check file extensions, config files (`pyproject.toml`, `package.json`, `go.mod`, `Cargo.toml`, `Gemfile`, `foundry.toml`, `hardhat.config.*`, `truffle-config.js`, `Move.toml`, etc.)
 2. **Package manager** — pip/uv/poetry, npm/yarn/pnpm, cargo, go modules, etc.
-3. **Tooling configs** — Lint (ruff, eslint, golangci-lint), format (ruff, prettier, gofmt), typecheck (mypy, pyright, tsc)
-4. **Test framework** — pytest, jest, vitest, go test, cargo test, etc. Check for test files and config.
-5. **Docker** — Dockerfile, docker-compose.yml, .dockerignore
-6. **Deploy targets** — Railway, Fly.io, Vercel, AWS, Kubernetes manifests, Terraform, etc.
-7. **Existing workflows** — Read all `.github/workflows/*.yml` files
-8. **Python version / Node version** — From `requires-python`, `engines`, `.python-version`, `.nvmrc`, `.node-version`
-9. **Dev dependencies** — Check what's available in dev/test dependency groups
+3. **Tooling configs** — Lint, format, typecheck tools. Don't assume defaults — read actual config files (`.eslintrc*`, `prettier` in deps, `ruff` in deps, `tsconfig.json`, `foundry.toml`, `biome.json`, etc.)
+4. **Test framework** — Detect from config files, dependency lists, and test file patterns (`tests/`, `test/`, `*_test.go`, `*.test.ts`, `*.t.sol`, etc.)
+5. **Build tools** — Read `package.json` scripts, `Makefile` targets, `scripts/` directory, `foundry.toml`, `hardhat.config.*`, `Cargo.toml`, `pyproject.toml` build sections
+6. **Docker** — `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+7. **Deploy targets** — Railway, Fly.io, Vercel, AWS, Kubernetes manifests, Terraform, etc.
+8. **Existing workflows** — Read all `.github/workflows/*.yml` files. For each, note the jobs, triggers, and tools used.
+9. **Version requirements** — From `requires-python`, `engines`, `.python-version`, `.nvmrc`, `.node-version`
+10. **Dev dependencies** — Check what's available in dev/test dependency groups
+11. **Monorepo structure** — Detect package boundaries (`packages/`, `apps/`, workspace configs in `package.json`, `pnpm-workspace.yaml`, Cargo workspaces, etc.)
+12. **Custom scripts** — Read `scripts/` directory and `package.json` scripts to understand project-specific build/test/deploy commands
 
-### Phase 2: Audit current pipeline
+### Phase 2: Reason about pipeline coverage
 
-Read `~/.claude/skills/ci-cd-pipeline/references/actions-catalog.md` for the full catalog of actions with add/remove criteria.
+Based on the discovered project profile, determine what CI jobs are needed. Do NOT reference a static catalog — reason from what the project actually uses.
 
-For each action in the catalog:
+**Evaluate coverage across these categories:**
 
-| Signal present? | Action exists? | Decision |
-|-----------------|---------------|----------|
+1. **Code quality** — For each language/package detected, check if lint, format, and typecheck tools are configured. Identify the specific tool and command from the project's own config (e.g., `pnpm lint` from `package.json` scripts, `forge fmt --check` from `foundry.toml`, `ruff check .` from `pyproject.toml`).
+
+2. **Testing** — For each test framework detected, identify the correct test command. Check for unit tests, integration tests, E2E tests, and fuzz tests. Look at `package.json` scripts, `Makefile` targets, and test config files to find the exact commands.
+
+3. **Security** — Dependency audits based on detected package managers (`npm audit`, `pip-audit`, `cargo audit`, etc.). Secret scanning if the project handles credentials or has `.env` files.
+
+4. **Build** — Compilation steps based on detected build tools (`forge build`, `pnpm build`, `cargo build`, `go build`, `docker build`, etc.). Only include if the project has build artifacts.
+
+5. **Deploy** — Platform-specific deploy jobs based on detected deploy targets (Railway, Fly.io, Vercel, etc.).
+
+**For each proposed job:**
+- Derive the exact commands from the project's own config files — don't assume default commands.
+- For monorepo/multi-package projects, determine if per-package jobs or matrix jobs are appropriate.
+
+**Compare against existing workflows to classify each item:**
+
+| Needed? | Exists in workflows? | Decision |
+|---------|---------------------|----------|
 | Yes | No | **Add** |
-| Yes | Yes | Check config is correct, **update** if stale |
-| No | Yes | **Remove** |
-| No | No | Skip |
-
-Produce a structured diff of proposed changes.
+| Yes | Yes, but stale/misconfigured | **Update** (explain what changed) |
+| No | Yes | **Remove** (tooling no longer present) |
+| Yes | Yes, correctly configured | **Keep** |
 
 ### Phase 3: Present the plan
 
@@ -46,7 +63,7 @@ Present findings to the user:
 ## CI/CD Audit Report
 
 ### Actions to Add
-- [ ] [action]: [rationale based on detected signal]
+- [ ] [action]: [rationale — what config/files were detected that justify this]
 
 ### Manual Setup Required
 > Only include this section when adding a deploy action.
@@ -92,3 +109,6 @@ After approval:
 - CI triggers: `push` to main/master + `pull_request`. Security: `push` to main + weekly `schedule`.
 - When adding tooling config, use the project's config file (e.g., `pyproject.toml` for Python, `package.json` for JS).
 - When removing an action, also clean up any orphaned tool configs that were only used by that action.
+- When proposing a CI job, derive the exact commands from the project's own config (package.json scripts, Makefile targets, existing dev scripts) rather than assuming default commands.
+- For monorepo/multi-package projects, detect package boundaries and create per-package or matrix jobs as appropriate.
+- Don't propose actions for tools the project doesn't use. Only propose what the project profile supports.
