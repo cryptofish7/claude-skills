@@ -60,16 +60,15 @@ Based on the commit prefix and type of change:
 
 This phase applies **only to `fix:` commits** that changed items from `[!]` to `[!] FIXED`.
 
-1. Determine the deployment URL:
-   - Check for a preview deployment URL: `gh pr list --state open --json url,headRefName | jq`
-   - Fall back to any production/staging URL listed in BUG_BASH_GUIDE
-   - Fall back to `http://localhost:3000` if running locally
-2. Open the deployment in the browser using browser automation tools.
-3. Navigate to the relevant page/feature for the fix.
-4. Visually confirm the fix works as expected:
+1. Read the deployment URL from `docs/BUG_BASH_GUIDE.md` (look in "Test Environment" or "Prerequisites" section).
+2. If no URL is listed, stop and ask the user for the deployed URL.
+3. NEVER use localhost. Bug bash verification must happen on a deployed build.
+4. Open the deployment in the browser using browser automation tools.
+5. Navigate to the relevant page/feature for the fix.
+6. Visually confirm the fix works as expected:
    - Check that the bug behavior is no longer present
    - Check that the correct behavior is now shown
-5. Take a screenshot as evidence.
+7. Take a screenshot as evidence.
 
 **If verified successfully:**
 - Change `[!] FIXED` to `[x]` with verification notes
@@ -94,3 +93,22 @@ This phase applies **only to `fix:` commits** that changed items from `[!]` to `
 - If a section doesn't exist for a new feature area, create it following the existing heading hierarchy
 - Always include the PR or commit reference when annotating fixes
 - Screenshots from browser verification should be saved with descriptive names (e.g., `history-tab-fix-verified.png`)
+
+## Verification Rules (MANDATORY)
+
+These rules apply to ALL bug bash verification — both Phase 4 fix verification and general checklist testing.
+
+1. **DO: Test in the browser** — ALL verification must happen via Claude in Chrome MCP tools (navigate, click, screenshot, read page). DO NOT use unit tests, `cast`, `forge test`, contract calls, or code review as verification. If the browser extension is not connected, stop and tell the user.
+
+2. **DO: Test on a deployed build** — Read the deployment URL from `docs/BUG_BASH_GUIDE.md`. NEVER use `localhost`. Bug bash tests deployed code, not local dev servers.
+
+3. **DO: Act autonomously in the browser** — Click buttons, navigate pages, scroll, take screenshots without asking user permission. Browser interactions during testing are routine actions. Only purchases, entering personal data, and account creation need explicit user approval.
+
+4. **DO: Ask the user to unblock, never skip** — When blocked (wallet not connected, insufficient funds, auth required, extension not responding), tell the user exactly what's needed and wait. DO NOT silently skip items or mark them "cannot test" without first asking the user if they can resolve the blocker.
+
+5. **DO: Follow marking conventions exactly:**
+   - `[ ]` = unverified (not yet tested)
+   - `[!]` = bug found (describe inline)
+   - `[!] FIXED` = fix applied but NOT yet verified in browser
+   - `[x]` = verified working in browser with screenshot evidence
+   - NEVER mark `[x]` without having taken a browser screenshot confirming the behavior. Code review or test output is not sufficient.

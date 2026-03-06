@@ -27,9 +27,10 @@ If you were spawned as a Task Runner by an orchestrator (like Ralph), follow the
 **Development flow:**
 
 1. **Plan**: Use the Task tool to spawn an Explore subagent. Pass it the task description, file structure, and relevant docs. It reads code and returns an implementation plan. Review the plan yourself — check for completeness, gaps, and alignment with the task. If it's lacking, re-plan with more specific instructions. Do not ask the user to approve the plan.
-2. **Implement**: Once the plan looks solid, use the Task tool to spawn an implementation subagent. Pass it the full approved plan and CLAUDE.md conventions. The subagent writes all code and tests.
-3. **Verify**: After the subagent completes, run the full verify suite (lint, format, typecheck, test). If verification fails, spawn the `debugger` agent for test failures or a Task subagent for lint/type errors.
-4. When stuck or going in circles, stop. Re-plan before continuing.
+2. **Branch**: Create a feature branch from main: `git checkout -b <type>/<short-slug>` (e.g., `feat/core-types`, `fix/timestamp-bug`). All implementation happens on this branch.
+3. **Implement**: Once the plan looks solid, use the Task tool to spawn an implementation subagent. Pass it the full approved plan and CLAUDE.md conventions. The subagent writes all code and tests.
+4. **Verify**: After the subagent completes, run the full verify suite (lint, format, typecheck, test). If verification fails, spawn the `debugger` agent for test failures or a Task subagent for lint/type errors.
+5. When stuck or going in circles, stop. Re-plan before continuing.
 
 **When the orchestrator acts directly** (exceptions):
 - Git operations (commit, branch, push, merge)
@@ -62,12 +63,10 @@ Skip any if the skill is unavailable. Wait for all subagents to complete before 
 **Step 3: Commit all changes.**
 Stage and commit everything from the task and from Step 2. Write a concise, descriptive commit message. Use conventional commit prefixes when appropriate (`feat:`, `fix:`, `chore:`, `docs:`, `ci:`, `refactor:`, `test:`).
 
-**Step 4: Push to a new branch and open a PR.**
-- Create a branch with a descriptive name: `<type>/<short-slug>` (e.g., `feat/core-types`, `fix/timestamp-bug`, `chore/update-deps`).
-- Push and open a PR:
+**Step 4: Push and open a PR.**
+- Push the current branch and open a PR:
   ```bash
-  git checkout -b <branch-name>
-  git push -u origin <branch-name>
+  git push -u origin HEAD
   gh pr create --fill
   ```
 
