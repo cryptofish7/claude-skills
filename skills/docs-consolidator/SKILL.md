@@ -55,6 +55,7 @@ Read every doc (if not already read in Phase 1) and compare against the registry
 - **Stale content**: references to removed code, outdated addresses, old instructions, TODOs that are done, etc. Cross-check against actual code when uncertain.
 - **Missing information**: important topics not documented anywhere, or docs that reference sections that don't exist.
 - **Poor organization**: docs where sections are out of logical order, or where related information is scattered across unrelated sections.
+- **Undocumented feature**: Examine the current branch name, recent commits, and changed files to determine if a significant new feature was implemented. Check each doc in the registry to see if it needs updating for this feature. For example: does the tasks/progress doc need a new milestone? Does the architecture doc need new components or APIs? Does a security doc need new threat analysis? Flag each doc that needs additions.
 
 ### Phase 3: Present the plan
 
@@ -87,13 +88,23 @@ After approval, apply changes doc by doc:
 3. Remove or update stale content
 4. Reorder sections for logical flow
 5. Update any cross-references that broke due to moves
+6. Document new features across relevant docs:
+   - For each doc flagged as needing feature documentation, add content to the appropriate existing sections following the doc's style.
+   - Tasks/progress docs: create a new milestone or section tracking the completed work. Mark items as done. Include PR references if available.
+   - Architecture docs: add new components, endpoints, schemas, or data flows.
+   - Product/PRD docs: add new feature specs or user flows.
+   - Security docs: add new trust assumptions or threat analysis.
+   - CLAUDE.md: add key hooks, architectural notes, or gotchas (keep lean).
+   - Only update docs where the feature introduces something new for that doc's domain. Don't force updates.
+   - All existing guidelines apply: prefer cross-references over duplication, keep CLAUDE.md lean, preserve writing style, one source of truth per topic.
 
 ### Phase 5: Verify
 
 1. Check that every doc has the content it should own and nothing else
 2. Grep for broken cross-references (doc paths, section links)
 3. If CLAUDE.md has a "Reference Documents" section, confirm it matches the actual docs
-4. Present a brief summary of all changes made
+4. For any new feature detected, confirm each flagged doc was updated and new content is in the correct section per the registry.
+5. Present a brief summary of all changes made
 
 ## Guidelines
 
